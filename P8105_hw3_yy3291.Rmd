@@ -33,6 +33,7 @@ summary(instacart)
 length(instacart)
 nrow(instacart)
 ncol(instacart)
+skimr::skim(instacart)
 ```
 
 From an initial summarizing look at the data instacart there are 1,384,617 observations of 15 variables with 4 variables that are categorical and 11 that are numerical. There also seems to be one binary variable, reordered, that corresponds to if an item is ordered again or not. Ther variables order day of the week and order hour of the day are interesting and show a median of 3 for day of the week meaning Wednesday is a day clients most often place their orders and with a median of 14 for hour of the day it seems most orders are places at 2 pm. 
@@ -191,5 +192,18 @@ nystate0610_plot =
   ggplot(nystate_0610_df, aes(x = Response, y = Data_value, color = Locationabbr)) +
   geom_point() 
 nystate0610_plot + facet_grid(Response ~ Year)
+```
+
+# Problem 3 Starting with reading the NHANES Accelerometer Data and wrangling the data
+```{r}
+nhanes_acceler_data = 
+  read_csv("./nhanes_accel.csv") %>% 
+  janitor::clean_names() %>% 
+  pivot_longer(
+    !seqn,
+    names_to = "minute",
+    names_prefix = "min",
+    values_to = "mims"
+  ) 
 ```
 
