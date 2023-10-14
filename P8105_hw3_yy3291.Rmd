@@ -178,5 +178,18 @@ nystate_2006_df =
   brfss_smart2010_df %>% 
   filter(Locationabbr == "NY", Year == "2006") %>% 
   drop_na(Response)
+
+nystate_2010_df = 
+  brfss_smart2010_df %>% 
+  filter(Locationabbr == "NY", Year == "2010") %>% 
+  drop_na(Response)
+
+nystate_0610_df =
+  full_join(nystate_2006_df, nystate_2010_df)
+
+nystate0610_plot = 
+  ggplot(nystate_0610_df, aes(x = Response, y = Data_value, color = Locationabbr)) +
+  geom_point() 
+nystate0610_plot + facet_grid(Response ~ Year)
 ```
 
