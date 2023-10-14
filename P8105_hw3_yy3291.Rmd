@@ -200,10 +200,23 @@ nhanes_acceler_data =
   read_csv("./nhanes_accel.csv") %>% 
   janitor::clean_names() %>% 
   pivot_longer(
-    !seqn,
+    cols = c(min1:min1440),
     names_to = "minute",
     names_prefix = "min",
     values_to = "mims"
   ) 
+
+# Now I will read the demographic data and try to tidy it with the end goal in mind of merging both data sets with the first obvious issue being that this data set does not have the column names until 5 lines down so I have to skip those first 4 lines and then reconfigure the data to be non-numeric but rather factors that have multiple levels.
+nhanes_demo_data = 
+  read_csv("./nhanes_covar.csv", skip = 4) %>% 
+  janitor::clean_names() %>% 
+  mutate(
+    sex = 
+      case_match(sex, 1 ~ "Male", 2 ~ "Female"),
+    sex = as.factor(sex),
+    education =
+      case_match(education, 1 ~ "Less than High School", 2 ~ " High School or Equivalent", 3 ~ "More than High School"),
+    education = as.factor(education)
+  )
 ```
 
