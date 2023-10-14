@@ -583,6 +583,213 @@ week</h1>
 items Pink Lady Apples and Coffee Ice Cream are ordered each day of the
 week.</p>
 </div>
+<div id="problem-2" class="section level1">
+<h1>Problem 2</h1>
+<div id="first-will-need-to-focus-on-overall-health-topic-including-only-responses-from-excellent-to-poor-and-organize-the-responses-as-a-factor-taking-levels-ordered-from-poor-to-excellent" class="section level3">
+<h3>First will need to focus on Overall Health Topic, including only
+responses from Excellent to Poor and organize the responses as a factor
+taking levels ordered from Poor to Excellent</h3>
+<pre class="r"><code>data(&quot;brfss_smart2010&quot;)
+summary(brfss_smart2010)</code></pre>
+<pre><code>##       Year      Locationabbr       Locationdesc          Class          
+##  Min.   :2002   Length:134203      Length:134203      Length:134203     
+##  1st Qu.:2005   Class :character   Class :character   Class :character  
+##  Median :2007   Mode  :character   Mode  :character   Mode  :character  
+##  Mean   :2007                                                           
+##  3rd Qu.:2009                                                           
+##  Max.   :2010                                                           
+##                                                                         
+##     Topic             Question           Response          Sample_Size    
+##  Length:134203      Length:134203      Length:134203      Min.   :   1.0  
+##  Class :character   Class :character   Class :character   1st Qu.:  59.0  
+##  Mode  :character   Mode  :character   Mode  :character   Median : 153.0  
+##                                                           Mean   : 271.7  
+##                                                           3rd Qu.: 353.0  
+##                                                           Max.   :4505.0  
+##                                                           NA&#39;s   :2       
+##    Data_value    Confidence_limit_Low Confidence_limit_High Display_order 
+##  Min.   : 0.10   Min.   : 0.00        Min.   :  0.00        Min.   : 1.0  
+##  1st Qu.:14.30   1st Qu.: 8.50        1st Qu.: 16.30        1st Qu.:16.0  
+##  Median :33.20   Median :25.90        Median : 37.00        Median :32.0  
+##  Mean   :43.23   Mean   :37.74        Mean   : 45.76        Mean   :32.4  
+##  3rd Qu.:77.30   3rd Qu.:71.10        3rd Qu.: 81.55        3rd Qu.:48.0  
+##  Max.   :99.90   Max.   :99.70        Max.   :100.00        Max.   :68.0  
+##  NA&#39;s   :4515                                                             
+##  Data_value_unit    Data_value_type    Data_Value_Footnote_Symbol
+##  Length:134203      Length:134203      Length:134203             
+##  Class :character   Class :character   Class :character          
+##  Mode  :character   Mode  :character   Mode  :character          
+##                                                                  
+##                                                                  
+##                                                                  
+##                                                                  
+##  Data_Value_Footnote  DataSource          ClassId            TopicId         
+##  Length:134203       Length:134203      Length:134203      Length:134203     
+##  Class :character    Class :character   Class :character   Class :character  
+##  Mode  :character    Mode  :character   Mode  :character   Mode  :character  
+##                                                                              
+##                                                                              
+##                                                                              
+##                                                                              
+##   LocationID         QuestionID           RESPID          GeoLocation       
+##  Length:134203      Length:134203      Length:134203      Length:134203     
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+##                                                                             
+##                                                                             
+##                                                                             
+## </code></pre>
+<pre class="r"><code>janitor::clean_names(brfss_smart2010)</code></pre>
+<pre><code>## # A tibble: 134,203 × 23
+##     year locationabbr locationdesc     class topic question response sample_size
+##    &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;          &lt;int&gt;
+##  1  2010 AL           AL - Jefferson … Heal… Over… How is … Excelle…          94
+##  2  2010 AL           AL - Jefferson … Heal… Over… How is … Very go…         148
+##  3  2010 AL           AL - Jefferson … Heal… Over… How is … Good             208
+##  4  2010 AL           AL - Jefferson … Heal… Over… How is … Fair             107
+##  5  2010 AL           AL - Jefferson … Heal… Over… How is … Poor              45
+##  6  2010 AL           AL - Jefferson … Heal… Fair… Health … Good or…         450
+##  7  2010 AL           AL - Jefferson … Heal… Fair… Health … Fair or…         152
+##  8  2010 AL           AL - Jefferson … Heal… Heal… Do you … Yes              524
+##  9  2010 AL           AL - Jefferson … Heal… Heal… Do you … No                77
+## 10  2010 AL           AL - Jefferson … Heal… Unde… Adults … Yes              316
+## # ℹ 134,193 more rows
+## # ℹ 15 more variables: data_value &lt;dbl&gt;, confidence_limit_low &lt;dbl&gt;,
+## #   confidence_limit_high &lt;dbl&gt;, display_order &lt;int&gt;, data_value_unit &lt;chr&gt;,
+## #   data_value_type &lt;chr&gt;, data_value_footnote_symbol &lt;chr&gt;,
+## #   data_value_footnote &lt;chr&gt;, data_source &lt;chr&gt;, class_id &lt;chr&gt;,
+## #   topic_id &lt;chr&gt;, location_id &lt;chr&gt;, question_id &lt;chr&gt;, respid &lt;chr&gt;,
+## #   geo_location &lt;chr&gt;</code></pre>
+<pre class="r"><code>brfss_smart2010_df =
+brfss_smart2010 %&gt;% 
+  filter(Topic %in% c(&quot;Overall Health&quot;)) %&gt;% 
+  group_by(Response) %&gt;% 
+  mutate(
+    Response = factor(Response, levels = c(&quot;Poor&quot;, &quot;Fair&quot;, &quot;Good&quot;, &quot;Very Good&quot;, &quot;Excellent&quot;))
+  ) %&gt;% 
+  arrange(Response)</code></pre>
+</div>
+<div id="in-2002-which-states-were-observed-at-7-or-more-locations-what-about-in-2010" class="section level3">
+<h3>In 2002, which states were observed at 7 or more locations? What
+about in 2010?</h3>
+<pre class="r"><code>location_2002_df = 
+  brfss_smart2010_df %&gt;% 
+  filter(Year == 2002) %&gt;% 
+  group_by(Locationabbr) %&gt;% 
+  summarize(
+    n_obs = n(),
+    n_locations = n_distinct(Locationdesc)
+  ) %&gt;% 
+  filter(n_locations &gt;= 7) %&gt;% 
+  select(Locationabbr)
+ knitr::kable(location_2002_df)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Locationabbr</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CT</td>
+</tr>
+<tr class="even">
+<td align="left">FL</td>
+</tr>
+<tr class="odd">
+<td align="left">MA</td>
+</tr>
+<tr class="even">
+<td align="left">NC</td>
+</tr>
+<tr class="odd">
+<td align="left">NJ</td>
+</tr>
+<tr class="even">
+<td align="left">PA</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># We can see that in 2002 the states Connecticut, Florida, Massachusetts, North Carolina, New Jersey and Pennsylvania were observed at 7 or mopre locations.
+ 
+location_2010_df = 
+  brfss_smart2010_df %&gt;% 
+  filter(Year == 2010) %&gt;% 
+  group_by(Locationabbr) %&gt;% 
+  summarize(
+    n_obs = n(),
+    n_locations = n_distinct(Locationdesc)
+  ) %&gt;% 
+  filter(n_locations &gt;= 7) %&gt;% 
+  select(Locationabbr)
+ knitr::kable(location_2010_df)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Locationabbr</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CA</td>
+</tr>
+<tr class="even">
+<td align="left">CO</td>
+</tr>
+<tr class="odd">
+<td align="left">FL</td>
+</tr>
+<tr class="even">
+<td align="left">MA</td>
+</tr>
+<tr class="odd">
+<td align="left">MD</td>
+</tr>
+<tr class="even">
+<td align="left">NC</td>
+</tr>
+<tr class="odd">
+<td align="left">NE</td>
+</tr>
+<tr class="even">
+<td align="left">NJ</td>
+</tr>
+<tr class="odd">
+<td align="left">NY</td>
+</tr>
+<tr class="even">
+<td align="left">OH</td>
+</tr>
+<tr class="odd">
+<td align="left">PA</td>
+</tr>
+<tr class="even">
+<td align="left">SC</td>
+</tr>
+<tr class="odd">
+<td align="left">TX</td>
+</tr>
+<tr class="even">
+<td align="left">WA</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># We can see that in 2010 the states California, Colorado, Florida, Massachusetts, Maryland, North Carolina, Nebraska, New Jersey, New York, Ohio, Pennsylvania, South Carolina, Texas and Washington were observed at 7 or mopre locations.</code></pre>
+</div>
+</div>
+<div id="constructing-a-dataset-that-is-limited-to-excellent-responses-and-contains-year-state-and-a-variable-that-averages-the-data_value-across-locations-within-a-state.-make-a-spaghetti-plot-of-this-average-value-over-time-within-a-state-that-is-make-a-plot-showing-a-line-for-each-state-across-years-the-geom_line-geometry-and-group-aesthetic-will-help." class="section level1">
+<h1>Constructing a dataset that is limited to Excellent responses, and
+contains, year, state, and a variable that averages the data_value
+across locations within a state. Make a “spaghetti” plot of this average
+value over time within a state (that is, make a plot showing a line for
+each state across years – the geom_line geometry and group aesthetic
+will help).</h1>
+</div>
+<div id="making-a-two-panel-plot-showing-for-the-years-2006-and-2010-distribution-of-data_value-for-responses-poor-to-excellent-among-locations-in-ny-state." class="section level1">
+<h1>Making a two-panel plot showing, for the years 2006, and 2010,
+distribution of data_value for responses (“Poor” to “Excellent”) among
+locations in NY State.</h1>
+</div>
 
 
 
