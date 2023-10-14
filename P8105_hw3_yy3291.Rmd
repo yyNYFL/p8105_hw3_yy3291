@@ -2,12 +2,13 @@
 title: "Homework 3"
 author: "Youssra Yemmas"
 date: "2023-10-14"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(p8105.datasets)
+library(ggridges)
 knitr::opts_chunk$set(
   fig.width = 6,
   fig.asp = .6,
@@ -58,7 +59,7 @@ instacart |>
   filter(n > 10000) |> 
   mutate(aisle = fct_reorder(aisle, n)) |> 
   ggplot(aes(x = aisle, y = n)) + 
-  geom_point() + 
+  geom_point(aes(color = aisle)) + 
   labs(title = "Number of items ordered in each aisle") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
@@ -156,7 +157,14 @@ location_2010_df =
 
 # Constructing a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. Make a “spaghetti” plot of this average value over time within a state (that is, make a plot showing a line for each state across years – the geom_line geometry and group aesthetic will help).
 ```{r}
-
+excellent_df = 
+  brfss_smart2010_df %>% 
+  filter(Response == "Excellent") %>% 
+  select(Year, Locationabbr, Data_value) %>% 
+  group_by(Locationabbr, Year) %>% 
+  mutate(
+    mean_data_value = mean(Data_value, na.rm = TRUE)
+  )
 ```
 
 # Making a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.
