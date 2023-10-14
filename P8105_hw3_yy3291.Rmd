@@ -1,0 +1,107 @@
+---
+title: "Homework 3"
+author: "Youssra Yemmas"
+date: "2023-10-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(p8105.datasets)
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+# Problem 1
+```{r}
+data("instacart")
+summary(instacart)
+length(instacart)
+nrow(instacart)
+ncol(instacart)
+```
+
+From an initial summarizing look at the data instacart there are 1,384,617 observations of 15 variables with 4 variables that are categorical and 11 that are numerical. There also seems to be one binary variable, reordered, that corresponds to if an item is ordered again or not. Ther variables order day of the week and order hour of the day are interesting and show a median of 3 for day of the week meaning Wednesday is a day clients most often place their orders and with a median of 14 for hour of the day it seems most orders are places at 2 pm. 
+
+# Problem 1 cont.-how many aisles are there and which aisles are the most items ordered from
+```{r}
+instacart |> 
+  count(aisle) |> 
+  arrange(desc(n))
+
+instacart1_df =
+instacart %>% 
+  janitor::clean_names() %>% 
+  group_by(aisle_id, aisle) %>% 
+  summarize(n_obs = n())
+```
+
+We can see from the subsetted data frame that there are 134 aisles and using the toggle arrows when viewing the instacart1_df we can see that some of the aisles where most items are ordered from are the fresh vegetables, fresh fruits, packaged vegetables fruits, yoghurt and packaged cheese aisles. 
+
+# Making a plot with number of items ordered in each aisle, filtering to aisles with more than 10000 items ordered 
+```{r}
+instacart |> 
+  count(aisle) |> 
+  filter(n > 10000) |> 
+  mutate(aisle = fct_reorder(aisle, n)) |> 
+  ggplot(aes(x = aisle, y = n)) + 
+  geom_point() + 
+  labs(title = "Number of items ordered in each aisle") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+instacart1_df %>% 
+  count(aisle) %>% 
+  filter(n > 10000) %>% 
+  mutate(
+    aisle_id = as.factor(aisle),
+    aisle_id = fct_reorder(aisle, n)
+  )
+aisles_plot =
+instacart1_df %>% 
+  ggplot(aes(x = aisle_id, y = n_obs)) +
+  geom_histogram(stat = "identity") +
+  labs(title = "Number of Items Ordered in Each Aisle", x = "Name of Aisles", y = "Number of Items Ordered")
+aisles_plot
+```
+
+# Making a table showing the most popular items in each of the aisles baking ingredients, dog food care, and packaged vegetables fruits including the number of times each is ordered
+```{r}
+instacart |> 
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) |>
+  group_by(aisle) |> 
+  count(product_name) |> 
+  mutate(rank = min_rank(desc(n))) |> 
+  filter(rank < 4) |> 
+  arrange(desc(n)) |>
+  knitr::kable()
+
+```
+This creates a data frame where we can toggle through and see that in the aisle baking ingredients the two most ordered items are Light Brown Sugar which was ordered 157 times and Pure Baking Soda which was ordered 140 times; in the aisle dog food care the two most ordered items in dog food care are Organix Grain Free Chicken & Vegetable Dog Food which was ordered 14 times and Organix Chicken & Brown Rice Recipe whcih was ordered 13 times and lastly in packaged vegetables fruits the two most ordered items are Organic Baby Spinach which was ordered 3324 times and Organic Raspberries which was ordered 1920 times. 
+
+# Making a data frame showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week
+```{r}
+mean_hour_df = 
+  instacart %>% 
+  filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>% 
+  group_by(product_name, order_dow) %>% 
+  summarize(mean_hour = mean(order_hour_of_day)) %>% 
+  pivot_wider(
+    names_from = order_dow,
+    values_from = mean_hour
+  ) %>% 
+  knitr::kable(digits = 2)
+```
+From the data we can see that the mean hour of the day at which the items Pink Lady Apples and Coffee Ice Cream are ordered each day of the week. 
