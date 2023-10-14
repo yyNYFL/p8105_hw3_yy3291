@@ -165,10 +165,18 @@ excellent_df =
   mutate(
     mean_data_value = mean(Data_value, na.rm = TRUE)
   )
+excellent_plot =
+  ggplot(excellent_df, aes(x = Year, y = mean_data_value, group = Locationabbr, color = Locationabbr)) +
+  geom_line() +
+  labs(title = "Spaghetti Plot of Mean Data Value Within Each State", x = "Year", Y = "Mean Values", color = "State")
+excellent_plot
 ```
 
 # Making a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.
 ```{r}
-
+nystate_2006_df = 
+  brfss_smart2010_df %>% 
+  filter(Locationabbr == "NY", Year == "2006") %>% 
+  drop_na(Response)
 ```
 
