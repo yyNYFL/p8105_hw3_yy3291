@@ -232,6 +232,37 @@ is.factor(final_nhanes_df$education)
 skimr::skim(final_nhanes_df)
 ```
 
+# Producing a reader-friendly table for the number of men and women in each education category
+```{r}
+sex_edu_table = 
+  final_nhanes_df %>% 
+  select(sex, education) %>% 
+  group_by(sex, education) %>% 
+  summarize(count = n()) %>% 
+  knitr::kable()
 
+sex_edu_table
+# There seems to be more Men than Women who have a High School or Equivalent Degree (50400 and 33120 respectively), there is about the same number of Men and Women who have Less Than a High School degree (38880 and 40320 respectively) but proportionally there seems to be a greater proportion of women who have less than a high school degree. In terms of higher education there is more women who have more than a high school degree. 
+
+```
+
+# A plot of the age distribution for men and women in each education category
+```{r}
+sex_edu_age_plot = 
+  ggplot(final_nhanes_df, aes(x = age, fill = sex)) +
+  geom_density(alpha = .5, adjust = .5) +
+  labs(
+    title = "Age Distribution for Men and Women in Each Education Category",
+    x = "Age from Participants who are 21 and Older ",
+    y = "Density", 
+    fill = "Sex"
+  ) + 
+  facet_grid(.~education, labeller = label_both) +
+  scale_x_continuous(
+    breaks = c(10, 20, 30, 40, 50, 60, 70, 80)
+  )
+           
+sex_edu_age_plot 
+```
 
 
