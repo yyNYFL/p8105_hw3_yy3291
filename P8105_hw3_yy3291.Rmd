@@ -293,3 +293,34 @@ total_activity_plot =
 total_activity_plot
 ```
 
+# Trying to Make another variable that describes the 24 hour course of activity
+```{r}
+is.numeric(nhanes_total_act_df$minute)
+twentyfour_hr_df = 
+  nhanes_total_act_df %>% 
+  group_by(seqn) %>% 
+  mutate(
+    minute = as.numeric(minute),
+    activity_by_hr = mims/60, 
+    hour = minute/60
+  )
+
+twentyfour_hr_plot =
+  ggplot(twentyfour_hr_df, aes(x = hour, y = activity_by_hr, color = sex)) +
+  geom_point(alpha = .1) +
+  geom_smooth(se = FALSE) +
+  facet_grid(.~ education, labeller = label_both) +
+  scale_x_continuous(
+    breaks = c(0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24)
+  ) +
+  labs(
+    title = "Activity Spread by Hour over 24 Hrs by Education and Sex",
+    x = "Hour",
+    y = "Activity by Hour"
+  ) +
+  viridis::scale_fill_viridis(discrete = TRUE) +
+  theme(legend.position = "bottom")
+
+twentyfour_hr_plot
+  
+```
