@@ -62,7 +62,7 @@ instacart |>
   ggplot(aes(x = aisle, y = n)) + 
   geom_point(aes(color = aisle)) + 
   labs(title = "Number of items ordered in each aisle") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  theme(axis.text.x = element_text(angle = 60, hjust = 1), legend.position = "right")
 
 instacart1_df %>% 
   count(aisle) %>% 
@@ -169,7 +169,8 @@ excellent_df =
 excellent_plot =
   ggplot(excellent_df, aes(x = Year, y = mean_data_value, group = Locationabbr, color = Locationabbr)) +
   geom_line() +
-  labs(title = "Spaghetti Plot of Mean Data Value Within Each State", x = "Year", Y = "Mean Values", color = "State")
+  labs(title = "Spaghetti Plot of Mean Data Value Within Each State", x = "Year", Y = "Mean Values", color = "State") + 
+  theme(legend.position = "right")
 excellent_plot
 ```
 
