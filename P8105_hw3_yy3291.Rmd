@@ -220,3 +220,18 @@ nhanes_demo_data =
   )
 ```
 
+# Attempting to Merge the two data sets
+The aim for the final data frame is that all originally observed variables are included; exclude participants less than 21 years of age, and those with missing demographic data; and encode data with reasonable variable classes (i.e. not numeric, and using factors with the ordering of tables and plots in mind).
+```{r}
+final_nhanes_df =
+  full_join(nhanes_acceler_data, nhanes_demo_data) %>% 
+  filter(age > 20) %>% 
+  drop_na(sex, age, bmi, education)
+is.factor(final_nhanes_df$sex)
+is.factor(final_nhanes_df$education)
+skimr::skim(final_nhanes_df)
+```
+
+
+
+
